@@ -117,4 +117,6 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Req
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  config :gateway, Gateway.Providers.MTN, base_url: System.fetch_env!("MTN_BASE_URL")
 end

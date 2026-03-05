@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :gateway, Gateway.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "gateway_dev",
+  username: System.get_env("DB_USER") || "bititi",
+  password: System.get_env("DB_PASS") || "postgres",
+  hostname: System.get_env("DB_HOST") || "localhost",
+  database: System.get_env("DB_NAME") || "gateway_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

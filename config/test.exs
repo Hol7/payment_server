@@ -6,10 +6,10 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :gateway, Gateway.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "gateway_test#{System.get_env("MIX_TEST_PARTITION")}",
+  username: System.get_env("DB_USER") || "bititi",
+  password: System.get_env("DB_PASS") || "postgres",
+  hostname: System.get_env("DB_HOST") || "localhost",
+  database: System.get_env("DB_NAME") || "gateway_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 

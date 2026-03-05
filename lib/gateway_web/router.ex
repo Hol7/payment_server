@@ -1,12 +1,43 @@
 defmodule GatewayWeb.Router do
   use GatewayWeb, :router
 
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
+
+  # scope "/api", GatewayWeb do
+  #   pipe_through :api
+  # end
+
   pipeline :api do
     plug :accepts, ["json"]
+    plug GatewayWeb.Plugs.Idempotency
   end
 
-  scope "/api", GatewayWeb do
+  scope "/api" do
     pipe_through :api
+
+    # forward "/graphql",
+    #         Absinthe.Plug,
+    #         schema: GatewayWeb.Schema
+
+    # forward "/graphql",
+    #         Absinthe.Plug,
+    #         schema: GatewayWeb.GraphQL.Schema
+
+    # forward "/graphiql",
+    #         Absinthe.Plug.GraphiQL,
+    #         schema: GatewayWeb.GraphQL.Schema
+
+    forward "/graphql",
+            Absinthe.Plug,
+            schema: GatewayWeb.GraphQL.Schema
+
+    forward "/graphiql",
+            Absinthe.Plug.GraphiQL,
+            schema: GatewayWeb.GraphQL.Schema
+
+    # post "/webhooks/mtn", WebhookController, :mtn
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
