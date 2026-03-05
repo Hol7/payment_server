@@ -22,6 +22,21 @@ config :gateway, GatewayWeb.Endpoint,
   pubsub_server: Gateway.PubSub,
   live_view: [signing_salt: "9vaWwNRC"]
 
+# Configure new packages
+config :gateway, Oban,
+  repo: Gateway.Repo,
+  queues: [payments: 50, reconciliation: 10],
+  plugins: [Oban.Plugins.Pruner]
+
+config :gateway, Gateway.Infra.HttpClient,
+  pools: %{
+    default: [size: 50]
+  }
+
+config :gateway, Gateway.IAM.Guardian,
+  issuer: "gateway",
+  secret_key: System.get_env("GUARDIAN_SECRET")
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

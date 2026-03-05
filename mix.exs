@@ -69,7 +69,7 @@ defmodule Gateway.MixProject do
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"},
       # encrypt provider credentials
-      {:cloak_ecto, "~> 1.2"},
+      {:cloak_ecto, "~> 1.2"}
     ]
   end
 
