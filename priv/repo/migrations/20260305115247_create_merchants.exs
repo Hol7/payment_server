@@ -9,5 +9,7 @@ defmodule Gateway.Repo.Migrations.CreateMerchants do
 
       timestamps(type: :utc_datetime)
     end
+
+    create unique_index(:merchants, [:api_key])
   end
 end

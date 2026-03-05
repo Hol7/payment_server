@@ -37,6 +37,16 @@ config :gateway, Gateway.IAM.Guardian,
   issuer: "gateway",
   secret_key: System.get_env("GUARDIAN_SECRET")
 
+# config url
+
+config :gateway, Gateway.Providers.MTN,
+  base_url: System.get_env("MTN_BASE_URL"),
+  collection_token_path: "/collection/token/",
+  collection_request_path: "/collection/v1_0/requesttopay",
+  disbursement_token_path: "/disbursement/token/",
+  target_environment: System.get_env("MTN_TARGET_ENV"),
+  subscription_key_collection: System.get_env("MTN_SUBSCRIPTION_KEY_COLLECTION")
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

@@ -8,7 +8,18 @@ defmodule Gateway.CoreTest do
 
     import Gateway.CoreFixtures
 
-    @invalid_attrs %{status: nil, type: nil, metadata: nil, currency: nil, amount: nil, merchant_id: nil, provider_id: nil, internal_reference: nil, provider_reference: nil, idempotency_key: nil}
+    @invalid_attrs %{
+      status: nil,
+      type: nil,
+      metadata: nil,
+      currency: nil,
+      amount: nil,
+      merchant_id: nil,
+      provider_id: nil,
+      internal_reference: nil,
+      provider_reference: nil,
+      idempotency_key: nil
+    }
 
     test "list_payment/0 returns all payment" do
       payments = payments_fixture()
@@ -21,7 +32,18 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_payments/1 with valid data creates a payments" do
-      valid_attrs = %{status: "some status", type: "some type", metadata: %{}, currency: "some currency", amount: 42, merchant_id: "7488a646-e31f-11e4-aace-600308960662", provider_id: "7488a646-e31f-11e4-aace-600308960662", internal_reference: "some internal_reference", provider_reference: "some provider_reference", idempotency_key: "some idempotency_key"}
+      valid_attrs = %{
+        status: "some status",
+        type: "some type",
+        metadata: %{},
+        currency: "some currency",
+        amount: 42,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
+        provider_id: "7488a646-e31f-11e4-aace-600308960662",
+        internal_reference: "some internal_reference",
+        provider_reference: "some provider_reference",
+        idempotency_key: "some idempotency_key"
+      }
 
       assert {:ok, %Payments{} = payments} = Core.create_payments(valid_attrs)
       assert payments.status == "some status"
@@ -42,7 +64,19 @@ defmodule Gateway.CoreTest do
 
     test "update_payments/2 with valid data updates the payments" do
       payments = payments_fixture()
-      update_attrs = %{status: "some updated status", type: "some updated type", metadata: %{}, currency: "some updated currency", amount: 43, merchant_id: "7488a646-e31f-11e4-aace-600308960668", provider_id: "7488a646-e31f-11e4-aace-600308960668", internal_reference: "some updated internal_reference", provider_reference: "some updated provider_reference", idempotency_key: "some updated idempotency_key"}
+
+      update_attrs = %{
+        status: "some updated status",
+        type: "some updated type",
+        metadata: %{},
+        currency: "some updated currency",
+        amount: 43,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960668",
+        provider_id: "7488a646-e31f-11e4-aace-600308960668",
+        internal_reference: "some updated internal_reference",
+        provider_reference: "some updated provider_reference",
+        idempotency_key: "some updated idempotency_key"
+      }
 
       assert {:ok, %Payments{} = payments} = Core.update_payments(payments, update_attrs)
       assert payments.status == "some updated status"
@@ -80,7 +114,13 @@ defmodule Gateway.CoreTest do
 
     import Gateway.CoreFixtures
 
-    @invalid_attrs %{currency: nil, owner_type: nil, owner_id: nil, provider_id: nil, balance_cache: nil}
+    @invalid_attrs %{
+      currency: nil,
+      owner_type: nil,
+      owner_id: nil,
+      provider_id: nil,
+      balance_cache: nil
+    }
 
     test "list_ledger_accounts/0 returns all ledger_accounts" do
       ledger_account = ledger_account_fixture()
@@ -93,7 +133,13 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_ledger_account/1 with valid data creates a ledger_account" do
-      valid_attrs = %{currency: "some currency", owner_type: "some owner_type", owner_id: "7488a646-e31f-11e4-aace-600308960662", provider_id: "7488a646-e31f-11e4-aace-600308960662", balance_cache: "120.5"}
+      valid_attrs = %{
+        currency: "some currency",
+        owner_type: "some owner_type",
+        owner_id: "7488a646-e31f-11e4-aace-600308960662",
+        provider_id: "7488a646-e31f-11e4-aace-600308960662",
+        balance_cache: "120.5"
+      }
 
       assert {:ok, %LedgerAccount{} = ledger_account} = Core.create_ledger_account(valid_attrs)
       assert ledger_account.currency == "some currency"
@@ -109,9 +155,18 @@ defmodule Gateway.CoreTest do
 
     test "update_ledger_account/2 with valid data updates the ledger_account" do
       ledger_account = ledger_account_fixture()
-      update_attrs = %{currency: "some updated currency", owner_type: "some updated owner_type", owner_id: "7488a646-e31f-11e4-aace-600308960668", provider_id: "7488a646-e31f-11e4-aace-600308960668", balance_cache: "456.7"}
 
-      assert {:ok, %LedgerAccount{} = ledger_account} = Core.update_ledger_account(ledger_account, update_attrs)
+      update_attrs = %{
+        currency: "some updated currency",
+        owner_type: "some updated owner_type",
+        owner_id: "7488a646-e31f-11e4-aace-600308960668",
+        provider_id: "7488a646-e31f-11e4-aace-600308960668",
+        balance_cache: "456.7"
+      }
+
+      assert {:ok, %LedgerAccount{} = ledger_account} =
+               Core.update_ledger_account(ledger_account, update_attrs)
+
       assert ledger_account.currency == "some updated currency"
       assert ledger_account.owner_type == "some updated owner_type"
       assert ledger_account.owner_id == "7488a646-e31f-11e4-aace-600308960668"
@@ -121,7 +176,10 @@ defmodule Gateway.CoreTest do
 
     test "update_ledger_account/2 with invalid data returns error changeset" do
       ledger_account = ledger_account_fixture()
-      assert {:error, %Ecto.Changeset{}} = Core.update_ledger_account(ledger_account, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Core.update_ledger_account(ledger_account, @invalid_attrs)
+
       assert ledger_account == Core.get_ledger_account!(ledger_account.id)
     end
 
@@ -155,7 +213,12 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_ledger_entry/1 with valid data creates a ledger_entry" do
-      valid_attrs = %{amount: "120.5", debit_account_id: "7488a646-e31f-11e4-aace-600308960662", credit_account_id: "7488a646-e31f-11e4-aace-600308960662", payment_id: "7488a646-e31f-11e4-aace-600308960662"}
+      valid_attrs = %{
+        amount: "120.5",
+        debit_account_id: "7488a646-e31f-11e4-aace-600308960662",
+        credit_account_id: "7488a646-e31f-11e4-aace-600308960662",
+        payment_id: "7488a646-e31f-11e4-aace-600308960662"
+      }
 
       assert {:ok, %LedgerEntry{} = ledger_entry} = Core.create_ledger_entry(valid_attrs)
       assert ledger_entry.amount == Decimal.new("120.5")
@@ -170,9 +233,17 @@ defmodule Gateway.CoreTest do
 
     test "update_ledger_entry/2 with valid data updates the ledger_entry" do
       ledger_entry = ledger_entry_fixture()
-      update_attrs = %{amount: "456.7", debit_account_id: "7488a646-e31f-11e4-aace-600308960668", credit_account_id: "7488a646-e31f-11e4-aace-600308960668", payment_id: "7488a646-e31f-11e4-aace-600308960668"}
 
-      assert {:ok, %LedgerEntry{} = ledger_entry} = Core.update_ledger_entry(ledger_entry, update_attrs)
+      update_attrs = %{
+        amount: "456.7",
+        debit_account_id: "7488a646-e31f-11e4-aace-600308960668",
+        credit_account_id: "7488a646-e31f-11e4-aace-600308960668",
+        payment_id: "7488a646-e31f-11e4-aace-600308960668"
+      }
+
+      assert {:ok, %LedgerEntry{} = ledger_entry} =
+               Core.update_ledger_entry(ledger_entry, update_attrs)
+
       assert ledger_entry.amount == Decimal.new("456.7")
       assert ledger_entry.debit_account_id == "7488a646-e31f-11e4-aace-600308960668"
       assert ledger_entry.credit_account_id == "7488a646-e31f-11e4-aace-600308960668"
@@ -229,7 +300,12 @@ defmodule Gateway.CoreTest do
 
     test "update_merchant/2 with valid data updates the merchant" do
       merchant = merchant_fixture()
-      update_attrs = %{name: "some updated name", status: "some updated status", api_key: "some updated api_key"}
+
+      update_attrs = %{
+        name: "some updated name",
+        status: "some updated status",
+        api_key: "some updated api_key"
+      }
 
       assert {:ok, %Merchant{} = merchant} = Core.update_merchant(merchant, update_attrs)
       assert merchant.name == "some updated name"
@@ -273,9 +349,15 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_merchant_provider/1 with valid data creates a merchant_provider" do
-      valid_attrs = %{enabled: true, merchant_id: "7488a646-e31f-11e4-aace-600308960662", provider_id: "7488a646-e31f-11e4-aace-600308960662"}
+      valid_attrs = %{
+        enabled: true,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
+        provider_id: "7488a646-e31f-11e4-aace-600308960662"
+      }
 
-      assert {:ok, %MerchantProvider{} = merchant_provider} = Core.create_merchant_provider(valid_attrs)
+      assert {:ok, %MerchantProvider{} = merchant_provider} =
+               Core.create_merchant_provider(valid_attrs)
+
       assert merchant_provider.enabled == true
       assert merchant_provider.merchant_id == "7488a646-e31f-11e4-aace-600308960662"
       assert merchant_provider.provider_id == "7488a646-e31f-11e4-aace-600308960662"
@@ -287,9 +369,16 @@ defmodule Gateway.CoreTest do
 
     test "update_merchant_provider/2 with valid data updates the merchant_provider" do
       merchant_provider = merchant_provider_fixture()
-      update_attrs = %{enabled: false, merchant_id: "7488a646-e31f-11e4-aace-600308960668", provider_id: "7488a646-e31f-11e4-aace-600308960668"}
 
-      assert {:ok, %MerchantProvider{} = merchant_provider} = Core.update_merchant_provider(merchant_provider, update_attrs)
+      update_attrs = %{
+        enabled: false,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960668",
+        provider_id: "7488a646-e31f-11e4-aace-600308960668"
+      }
+
+      assert {:ok, %MerchantProvider{} = merchant_provider} =
+               Core.update_merchant_provider(merchant_provider, update_attrs)
+
       assert merchant_provider.enabled == false
       assert merchant_provider.merchant_id == "7488a646-e31f-11e4-aace-600308960668"
       assert merchant_provider.provider_id == "7488a646-e31f-11e4-aace-600308960668"
@@ -297,14 +386,20 @@ defmodule Gateway.CoreTest do
 
     test "update_merchant_provider/2 with invalid data returns error changeset" do
       merchant_provider = merchant_provider_fixture()
-      assert {:error, %Ecto.Changeset{}} = Core.update_merchant_provider(merchant_provider, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Core.update_merchant_provider(merchant_provider, @invalid_attrs)
+
       assert merchant_provider == Core.get_merchant_provider!(merchant_provider.id)
     end
 
     test "delete_merchant_provider/1 deletes the merchant_provider" do
       merchant_provider = merchant_provider_fixture()
       assert {:ok, %MerchantProvider{}} = Core.delete_merchant_provider(merchant_provider)
-      assert_raise Ecto.NoResultsError, fn -> Core.get_merchant_provider!(merchant_provider.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Core.get_merchant_provider!(merchant_provider.id)
+      end
     end
 
     test "change_merchant_provider/1 returns a merchant_provider changeset" do
@@ -318,7 +413,15 @@ defmodule Gateway.CoreTest do
 
     import Gateway.CoreFixtures
 
-    @invalid_attrs %{active: nil, merchant_id: nil, provider_id: nil, collection_percentage: nil, disbursement_percentage: nil, flat_fee: nil, tax_percentage: nil}
+    @invalid_attrs %{
+      active: nil,
+      merchant_id: nil,
+      provider_id: nil,
+      collection_percentage: nil,
+      disbursement_percentage: nil,
+      flat_fee: nil,
+      tax_percentage: nil
+    }
 
     test "list_merchant_fee_configs/0 returns all merchant_fee_configs" do
       fee_config = fee_config_fixture()
@@ -331,7 +434,15 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_fee_config/1 with valid data creates a fee_config" do
-      valid_attrs = %{active: true, merchant_id: "7488a646-e31f-11e4-aace-600308960662", provider_id: "7488a646-e31f-11e4-aace-600308960662", collection_percentage: "120.5", disbursement_percentage: "120.5", flat_fee: "120.5", tax_percentage: "120.5"}
+      valid_attrs = %{
+        active: true,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
+        provider_id: "7488a646-e31f-11e4-aace-600308960662",
+        collection_percentage: "120.5",
+        disbursement_percentage: "120.5",
+        flat_fee: "120.5",
+        tax_percentage: "120.5"
+      }
 
       assert {:ok, %FeeConfig{} = fee_config} = Core.create_fee_config(valid_attrs)
       assert fee_config.active == true
@@ -349,7 +460,16 @@ defmodule Gateway.CoreTest do
 
     test "update_fee_config/2 with valid data updates the fee_config" do
       fee_config = fee_config_fixture()
-      update_attrs = %{active: false, merchant_id: "7488a646-e31f-11e4-aace-600308960668", provider_id: "7488a646-e31f-11e4-aace-600308960668", collection_percentage: "456.7", disbursement_percentage: "456.7", flat_fee: "456.7", tax_percentage: "456.7"}
+
+      update_attrs = %{
+        active: false,
+        merchant_id: "7488a646-e31f-11e4-aace-600308960668",
+        provider_id: "7488a646-e31f-11e4-aace-600308960668",
+        collection_percentage: "456.7",
+        disbursement_percentage: "456.7",
+        flat_fee: "456.7",
+        tax_percentage: "456.7"
+      }
 
       assert {:ok, %FeeConfig{} = fee_config} = Core.update_fee_config(fee_config, update_attrs)
       assert fee_config.active == false
@@ -457,7 +577,9 @@ defmodule Gateway.CoreTest do
     test "create_provider_credential/1 with valid data creates a provider_credential" do
       valid_attrs = %{provider_id: "7488a646-e31f-11e4-aace-600308960662", config_json: %{}}
 
-      assert {:ok, %ProviderCredential{} = provider_credential} = Core.create_provider_credential(valid_attrs)
+      assert {:ok, %ProviderCredential{} = provider_credential} =
+               Core.create_provider_credential(valid_attrs)
+
       assert provider_credential.provider_id == "7488a646-e31f-11e4-aace-600308960662"
       assert provider_credential.config_json == %{}
     end
@@ -470,21 +592,29 @@ defmodule Gateway.CoreTest do
       provider_credential = provider_credential_fixture()
       update_attrs = %{provider_id: "7488a646-e31f-11e4-aace-600308960668", config_json: %{}}
 
-      assert {:ok, %ProviderCredential{} = provider_credential} = Core.update_provider_credential(provider_credential, update_attrs)
+      assert {:ok, %ProviderCredential{} = provider_credential} =
+               Core.update_provider_credential(provider_credential, update_attrs)
+
       assert provider_credential.provider_id == "7488a646-e31f-11e4-aace-600308960668"
       assert provider_credential.config_json == %{}
     end
 
     test "update_provider_credential/2 with invalid data returns error changeset" do
       provider_credential = provider_credential_fixture()
-      assert {:error, %Ecto.Changeset{}} = Core.update_provider_credential(provider_credential, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Core.update_provider_credential(provider_credential, @invalid_attrs)
+
       assert provider_credential == Core.get_provider_credential!(provider_credential.id)
     end
 
     test "delete_provider_credential/1 deletes the provider_credential" do
       provider_credential = provider_credential_fixture()
       assert {:ok, %ProviderCredential{}} = Core.delete_provider_credential(provider_credential)
-      assert_raise Ecto.NoResultsError, fn -> Core.get_provider_credential!(provider_credential.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Core.get_provider_credential!(provider_credential.id)
+      end
     end
 
     test "change_provider_credential/1 returns a provider_credential changeset" do
@@ -511,7 +641,12 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{email: "some email", password_hash: "some password_hash", merchant_id: "7488a646-e31f-11e4-aace-600308960662", role_id: "7488a646-e31f-11e4-aace-600308960662"}
+      valid_attrs = %{
+        email: "some email",
+        password_hash: "some password_hash",
+        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
+        role_id: "7488a646-e31f-11e4-aace-600308960662"
+      }
 
       assert {:ok, %User{} = user} = Core.create_user(valid_attrs)
       assert user.email == "some email"
@@ -526,7 +661,13 @@ defmodule Gateway.CoreTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{email: "some updated email", password_hash: "some updated password_hash", merchant_id: "7488a646-e31f-11e4-aace-600308960668", role_id: "7488a646-e31f-11e4-aace-600308960668"}
+
+      update_attrs = %{
+        email: "some updated email",
+        password_hash: "some updated password_hash",
+        merchant_id: "7488a646-e31f-11e4-aace-600308960668",
+        role_id: "7488a646-e31f-11e4-aace-600308960668"
+      }
 
       assert {:ok, %User{} = user} = Core.update_user(user, update_attrs)
       assert user.email == "some updated email"
@@ -625,7 +766,10 @@ defmodule Gateway.CoreTest do
     end
 
     test "create_role_permission/1 with valid data creates a role_permission" do
-      valid_attrs = %{role_id: "7488a646-e31f-11e4-aace-600308960662", permission_id: "7488a646-e31f-11e4-aace-600308960662"}
+      valid_attrs = %{
+        role_id: "7488a646-e31f-11e4-aace-600308960662",
+        permission_id: "7488a646-e31f-11e4-aace-600308960662"
+      }
 
       assert {:ok, %RolePermission{} = role_permission} = Core.create_role_permission(valid_attrs)
       assert role_permission.role_id == "7488a646-e31f-11e4-aace-600308960662"
@@ -638,16 +782,25 @@ defmodule Gateway.CoreTest do
 
     test "update_role_permission/2 with valid data updates the role_permission" do
       role_permission = role_permission_fixture()
-      update_attrs = %{role_id: "7488a646-e31f-11e4-aace-600308960668", permission_id: "7488a646-e31f-11e4-aace-600308960668"}
 
-      assert {:ok, %RolePermission{} = role_permission} = Core.update_role_permission(role_permission, update_attrs)
+      update_attrs = %{
+        role_id: "7488a646-e31f-11e4-aace-600308960668",
+        permission_id: "7488a646-e31f-11e4-aace-600308960668"
+      }
+
+      assert {:ok, %RolePermission{} = role_permission} =
+               Core.update_role_permission(role_permission, update_attrs)
+
       assert role_permission.role_id == "7488a646-e31f-11e4-aace-600308960668"
       assert role_permission.permission_id == "7488a646-e31f-11e4-aace-600308960668"
     end
 
     test "update_role_permission/2 with invalid data returns error changeset" do
       role_permission = role_permission_fixture()
-      assert {:error, %Ecto.Changeset{}} = Core.update_role_permission(role_permission, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Core.update_role_permission(role_permission, @invalid_attrs)
+
       assert role_permission == Core.get_role_permission!(role_permission.id)
     end
 

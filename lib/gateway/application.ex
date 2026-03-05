@@ -12,6 +12,7 @@ defmodule Gateway.Application do
       Gateway.Repo,
       {DNSCluster, query: Application.get_env(:gateway, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Gateway.PubSub},
+      Gateway.Providers.MTN.TokenManager,
       # Start a worker by calling: Gateway.Worker.start_link(arg)
       # {Gateway.Worker, arg},
       # Start to serve requests, typically the last entry

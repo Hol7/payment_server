@@ -17,7 +17,23 @@ defmodule Gateway.Core.FeeConfig do
   @doc false
   def changeset(fee_config, attrs) do
     fee_config
-    |> cast(attrs, [:merchant_id, :provider_id, :collection_percentage, :disbursement_percentage, :flat_fee, :tax_percentage, :active])
-    |> validate_required([:merchant_id, :provider_id, :collection_percentage, :disbursement_percentage, :flat_fee, :tax_percentage, :active])
+    |> cast(attrs, [
+      :merchant_id,
+      :provider_id,
+      :collection_percentage,
+      :disbursement_percentage,
+      :flat_fee,
+      :tax_percentage,
+      :active
+    ])
+    |> validate_required([
+      :merchant_id,
+      :provider_id,
+      :collection_percentage,
+      :disbursement_percentage,
+      :flat_fee,
+      :tax_percentage,
+      :active
+    ])
   end
 end

@@ -10,5 +10,9 @@ defmodule Gateway.Repo.Migrations.CreateLedgerEntries do
 
       timestamps(type: :utc_datetime)
     end
+
+    create index(:ledger_entries, [:payment_id])
+    create index(:ledger_entries, [:debit_account_id])
+    create index(:ledger_entries, [:credit_account_id])
   end
 end

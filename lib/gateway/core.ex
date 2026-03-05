@@ -6,7 +6,7 @@ defmodule Gateway.Core do
   import Ecto.Query, warn: false
   alias Gateway.Repo
 
-  alias Gateway.Core.Payments
+  alias Gateway.Core.Payments.Payment
 
   @doc """
   Returns the list of payment.
@@ -18,7 +18,7 @@ defmodule Gateway.Core do
 
   """
   def list_payment do
-    Repo.all(Payments)
+    Repo.all(Payment)
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Gateway.Core do
       ** (Ecto.NoResultsError)
 
   """
-  def get_payments!(id), do: Repo.get!(Payments, id)
+  def get_payments!(id), do: Repo.get!(Payment, id)
 
   @doc """
   Creates a payments.
@@ -50,8 +50,8 @@ defmodule Gateway.Core do
 
   """
   def create_payments(attrs) do
-    %Payments{}
-    |> Payments.changeset(attrs)
+    %Payment{}
+    |> Payment.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -67,9 +67,9 @@ defmodule Gateway.Core do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_payments(%Payments{} = payments, attrs) do
+  def update_payments(%Payment{} = payments, attrs) do
     payments
-    |> Payments.changeset(attrs)
+    |> Payment.changeset(attrs)
     |> Repo.update()
   end
 
@@ -85,7 +85,7 @@ defmodule Gateway.Core do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_payments(%Payments{} = payments) do
+  def delete_payments(%Payment{} = payments) do
     Repo.delete(payments)
   end
 
@@ -98,8 +98,8 @@ defmodule Gateway.Core do
       %Ecto.Changeset{data: %Payments{}}
 
   """
-  def change_payments(%Payments{} = payments, attrs \\ %{}) do
-    Payments.changeset(payments, attrs)
+  def change_payments(%Payment{} = payments, attrs \\ %{}) do
+    Payment.changeset(payments, attrs)
   end
 
   alias Gateway.Core.LedgerAccount
