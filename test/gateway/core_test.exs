@@ -4,7 +4,7 @@ defmodule Gateway.CoreTest do
   alias Gateway.Core
 
   describe "payment" do
-    alias Gateway.Core.Payments
+    alias Gateway.Core.Payments.Payment
 
     import Gateway.CoreFixtures
 
@@ -17,7 +17,7 @@ defmodule Gateway.CoreTest do
       merchant_id: nil,
       provider_id: nil,
       internal_reference: nil,
-      provider_reference: nil,
+      external_reference: nil,
       idempotency_key: nil
     }
 
@@ -33,28 +33,28 @@ defmodule Gateway.CoreTest do
 
     test "create_payments/1 with valid data creates a payments" do
       valid_attrs = %{
-        status: "some status",
+        status: :initiated,
         type: "some type",
         metadata: %{},
         currency: "some currency",
         amount: 42,
-        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
-        provider_id: "7488a646-e31f-11e4-aace-600308960662",
+        merchant_id: 1,
+        provider_id: 1,
         internal_reference: "some internal_reference",
-        provider_reference: "some provider_reference",
+        external_reference: "some external_reference",
         idempotency_key: "some idempotency_key"
       }
 
-      assert {:ok, %Payments{} = payments} = Core.create_payments(valid_attrs)
-      assert payments.status == "some status"
+      assert {:ok, %Payment{} = payments} = Core.create_payments(valid_attrs)
+      assert payments.status == :initiated
       assert payments.type == "some type"
       assert payments.metadata == %{}
       assert payments.currency == "some currency"
-      assert payments.amount == 42
-      assert payments.merchant_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert payments.provider_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert payments.amount == Decimal.new("42")
+      assert payments.merchant_id == 1
+      assert payments.provider_id == 1
       assert payments.internal_reference == "some internal_reference"
-      assert payments.provider_reference == "some provider_reference"
+      assert payments.external_reference == "some external_reference"
       assert payments.idempotency_key == "some idempotency_key"
     end
 
@@ -66,28 +66,28 @@ defmodule Gateway.CoreTest do
       payments = payments_fixture()
 
       update_attrs = %{
-        status: "some updated status",
+        status: :processing,
         type: "some updated type",
         metadata: %{},
         currency: "some updated currency",
         amount: 43,
-        merchant_id: "7488a646-e31f-11e4-aace-600308960668",
-        provider_id: "7488a646-e31f-11e4-aace-600308960668",
+        merchant_id: 1,
+        provider_id: 1,
         internal_reference: "some updated internal_reference",
-        provider_reference: "some updated provider_reference",
+        external_reference: "some updated external_reference",
         idempotency_key: "some updated idempotency_key"
       }
 
-      assert {:ok, %Payments{} = payments} = Core.update_payments(payments, update_attrs)
-      assert payments.status == "some updated status"
+      assert {:ok, %Payment{} = payments} = Core.update_payments(payments, update_attrs)
+      assert payments.status == :processing
       assert payments.type == "some updated type"
       assert payments.metadata == %{}
       assert payments.currency == "some updated currency"
-      assert payments.amount == 43
-      assert payments.merchant_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert payments.provider_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert payments.amount == Decimal.new("43")
+      assert payments.merchant_id == 1
+      assert payments.provider_id == 1
       assert payments.internal_reference == "some updated internal_reference"
-      assert payments.provider_reference == "some updated provider_reference"
+      assert payments.external_reference == "some updated external_reference"
       assert payments.idempotency_key == "some updated idempotency_key"
     end
 
@@ -99,7 +99,7 @@ defmodule Gateway.CoreTest do
 
     test "delete_payments/1 deletes the payments" do
       payments = payments_fixture()
-      assert {:ok, %Payments{}} = Core.delete_payments(payments)
+      assert {:ok, %Payment{}} = Core.delete_payments(payments)
       assert_raise Ecto.NoResultsError, fn -> Core.get_payments!(payments.id) end
     end
 

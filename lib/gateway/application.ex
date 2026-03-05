@@ -10,6 +10,7 @@ defmodule Gateway.Application do
     children = [
       GatewayWeb.Telemetry,
       Gateway.Repo,
+      {Oban, Application.fetch_env!(:gateway, Oban)},
       {DNSCluster, query: Application.get_env(:gateway, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Gateway.PubSub},
       Gateway.Providers.MTN.TokenManager,

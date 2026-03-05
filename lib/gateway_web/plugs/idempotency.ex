@@ -5,7 +5,7 @@ defmodule GatewayWeb.Plugs.Idempotency do
 
   def call(conn, _opts) do
     case get_req_header(conn, "idempotency-key") do
-      [key] when byte_size(key) > 10 ->
+      [key] when byte_size(key) > 0 ->
         assign(conn, :idempotency_key, key)
 
       _ ->

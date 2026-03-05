@@ -8,6 +8,8 @@ defmodule Gateway.CoreFixtures do
   Generate a payments.
   """
   def payments_fixture(attrs \\ %{}) do
+    merchant = merchant_fixture()
+
     {:ok, payments} =
       attrs
       |> Enum.into(%{
@@ -15,11 +17,11 @@ defmodule Gateway.CoreFixtures do
         currency: "some currency",
         idempotency_key: "some idempotency_key",
         internal_reference: "some internal_reference",
-        merchant_id: "7488a646-e31f-11e4-aace-600308960662",
+        merchant_id: merchant.id,
         metadata: %{},
-        provider_id: "7488a646-e31f-11e4-aace-600308960662",
-        provider_reference: "some provider_reference",
-        status: "some status",
+        provider_id: 1,
+        external_reference: "some external_reference",
+        status: :initiated,
         type: "some type"
       })
       |> Gateway.Core.create_payments()

@@ -5,9 +5,13 @@ defmodule GatewayWeb.GraphQL.Types.PaymentTypes do
 
   object :payment do
     field :id, :id
-    field :amount, :integer
+    field :amount, :decimal
     field :currency, :string
-    field :status, :string
+    field :status, :string do
+      resolve(fn payment, _, _ ->
+        {:ok, payment.status && Atom.to_string(payment.status)}
+      end)
+    end
   end
 
   object :payment_response do

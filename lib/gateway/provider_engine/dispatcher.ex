@@ -6,9 +6,7 @@ defmodule Gateway.ProviderEngine.Dispatcher do
   alias Gateway.Core.Ledger.Engine, as: LedgerEngine
 
   @providers %{
-    1 => Gateway.Providers.MTN.Adapter,
-    2 => Gateway.Providers.Moov.Adapter,
-    3 => Gateway.Providers.Togocel.Adapter
+    1 => Gateway.Providers.MTN.Adapter
   }
 
   def get_provider_module(provider_id) do
