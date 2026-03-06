@@ -1,5 +1,7 @@
 # Gateway
 
+![Gateway Architecture](assets/image.png)
+
 ## Overview
 
 This is a Phoenix (Bandit) application that exposes its public API via **GraphQL (Absinthe)**.
@@ -64,6 +66,12 @@ mix phx.server
 
 Note: if `http://localhost:4000` behaves differently than `http://127.0.0.1:4000`, you likely have another process (e.g. Docker) bound to port `4000` on IPv6.
 
+## Documentation
+
+- **[IEx Debugging Session](docs/iex-debugging-session.md)** — Step-by-step debugging commands and examples
+- **[GraphiQL Playground Examples](docs/graphiql-examples.md)** — Ready-to-use GraphQL queries and mutations for testing
+- **[Interactive HTML Playground](assets/playground.html)** — Browser-friendly reference with all queries and mutations
+
 ## Tests
 
 ```sh
@@ -99,7 +107,7 @@ HTTP endpoints:
 ### Mutations
 
 - `createMerchant(name: String!)`
-- `createPayment(amount: Int!, currency: String!)`
+- `createPayment(amount: Int!, currency: String!, phoneNumber: String!)` — Requires `Authorization: Bearer <merchant_api_key>` header
 
 ### Curl examples
 
@@ -129,7 +137,8 @@ Create a payment:
 curl -s \
   -X POST http://127.0.0.1:4000/api/graphql \
   -H 'content-type: application/json' \
-  -d '{"query":"mutation { createPayment(amount: 1000, currency: \"XOF\") { payment { id amount currency status } } }"}'
+  -H 'Authorization: Bearer <merchant_api_key>' \
+  -d '{"query":"mutation { createPayment(amount: 1000, currency: \"XOF\", phoneNumber: \"229XXXXXXXX\") { payment { id amount currency status } } }"}'
 ```
 
 ### Token generation

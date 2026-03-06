@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gateway GraphQL Playground</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; }
+        .query { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+        .headers { background: #e8f5e9; padding: 10px; border-radius: 4px; }
+        pre { background: #f8f8f8; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .note { background: #fff3cd; padding: 10px; border-radius: 4px; border-left: 4px solid #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>Gateway GraphQL Playground</h1>
+    <p>This page provides ready-to-use GraphQL queries and mutations for testing the Gateway API at <a href="/api/graphiql">http://localhost:4000/api/graphiql</a></p>
+    
+    <div class="note">
+        <strong>Note:</strong> Open <a href="/api/graphiql">GraphiQL IDE</a> in another tab and copy-paste these examples. For payment mutations, set the Authorization header first.
+    </div>
+
+    <div class="section">
+        <h2>1. Create a Merchant</h2>
+        <div class="query">
+            <pre><code>mutation CreateMerchant {
+  createMerchant(name: "Test Shop") {
+    id
+    name
+    api_key
+    inserted_at
+  }
+}</code></pre>
+        </div>
+        <p><strong>After running this:</strong> Copy the <code>api_key</code> from the response - you'll need it for payment mutations.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Set Authorization Header for Payments</h2>
+        <p>In GraphiQL, click the "Headers" panel and add:</p>
+        <div class="headers">
+            <pre><code>{
+  "Authorization": "Bearer PASTE_MERCHANT_API_KEY_HERE"
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Create a Payment</h2>
+        <div class="query">
+            <pre><code>mutation CreatePayment {
+  createPayment(amount: 1000, currency: "XOF", phoneNumber: "229XXXXXXXX") {
+    id
+    amount
+    currency
+    status
+    phone_number
+    internal_reference
+    external_reference
+    idempotency_key
+    provider_id
+    merchant_id
+    inserted_at
+  }
+}</code></pre>
+        </div>
+        <p><strong>Expected:</strong> Payment created with status <code>:initiated</code>. Note the <code>id</code> for querying later.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Query Payment Status</h2>
+        <div class="query">
+            <pre><code>query GetPayment($id: ID!) {
+  payment(id: $id) {
+    id
+    amount
+    currency
+    status
+    phone_number
+    internal_reference
+    external_reference
+    provider_id
+    merchant_id
+    inserted_at
+    updated_at
+  }
+}</code></pre>
+        </div>
+        <p><strong>Variables:</strong></p>
+        <pre><code>{
+  "id": "1"
+}</code></pre>
+        <p><strong>Status flow:</strong> <code>:initiated</code> → <code>:processing</code> → <code>:success</code> or <code>:failed</code></p>
+    </div>
+
+    <div class="section">
+        <h2>5. List All Merchants</h2>
+        <div class="query">
+            <pre><code>query ListMerchants {
+  merchants {
+    id
+    name
+    api_key
+    inserted_at
+  }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>6. List All Payments</h2>
+        <div class="query">
+            <pre><code>query ListPayments {
+  payments {
+    id
+    amount
+    currency
+    status
+    phone_number
+    internal_reference
+    external_reference
+    provider_id
+    merchant_id
+    inserted_at
+  }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Quick Test Workflow</h2>
+        <ol>
+            <li>Create merchant → copy <code>api_key</code></li>
+            <li>Set Authorization header with the <code>api_key</code></li>
+            <li>Create payment → note <code>id</code></li>
+            <li>Query payment status to see updates</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Troubleshooting</h2>
+        <ul>
+            <li><strong>Payment creation fails:</strong> Check Authorization header is set with valid merchant API key</li>
+            <li><strong>Payment stays <code>:initiated</code>:</strong> Check environment variables are loaded (<code>MTN_BASE_URL</code>, etc.)</li>
+            <li><strong>No Oban jobs:</strong> In IEx: <code>Repo.all(Oban.Job)</code></li>
+        </ul>
+    </div>
+</body>
+</html>

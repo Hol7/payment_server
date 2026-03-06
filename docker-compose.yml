@@ -1,5 +1,4 @@
 
-
 services:
 
   postgres:
@@ -14,20 +13,32 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gateway"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   gateway:
     build: .
     container_name: gateway_app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       DB_HOST: postgres
       DB_USER: gateway
       DB_PASS: gateway
       DB_NAME: gateway_dev
+      # MTN Provider Configuration (replace with actual values)
+      MTN_BASE_URL: https://sandbox.momodeveloper.mtn.com
+      MTN_TARGET_ENV: sandbox
+      MTN_API_USER: your_api_user
+      MTN_API_KEY: your_api_key
+      MTN_SUBSCRIPTION_KEY_COLLECTION: your_subscription_key
     ports:
       - "4000:4000"
-    command: mix phx.server
+    command: sh -c "mix ecto.create && mix ecto.migrate && mix phx.server"
 
 volumes:
   postgres_data:
