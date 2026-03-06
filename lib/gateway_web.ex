@@ -25,7 +25,7 @@ defmodule GatewayWeb do
 
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
-      import Phoenix.Controller
+      import Phoenix.Controller, except: [redirect: 2]
     end
   end
 

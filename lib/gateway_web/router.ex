@@ -1,6 +1,10 @@
 defmodule GatewayWeb.Router do
   use GatewayWeb, :router
 
+  pipeline :browser do
+    plug :accepts, ["html"]
+  end
+
   # pipeline :api do
   #   plug :accepts, ["json"]
   # end
@@ -12,6 +16,17 @@ defmodule GatewayWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug GatewayWeb.Plugs.Idempotency
+  end
+
+  pipeline :graphiql do
+    plug :accepts, ["html", "json"]
+    plug GatewayWeb.Plugs.Idempotency
+  end
+
+  scope "/" do
+    pipe_through :browser
+
+    get "/", GatewayWeb.RootController, :index
   end
 
   scope "/api" do
@@ -32,6 +47,10 @@ defmodule GatewayWeb.Router do
     forward "/graphql",
             Absinthe.Plug,
             schema: GatewayWeb.GraphQL.Schema
+  end
+
+  scope "/api" do
+    pipe_through :graphiql
 
     forward "/graphiql",
             Absinthe.Plug.GraphiQL,

@@ -9,9 +9,11 @@ defmodule GatewayWeb.Plugs.Idempotency do
         assign(conn, :idempotency_key, key)
 
       _ ->
+        key = Ecto.UUID.generate()
+
         conn
-        |> send_resp(400, "Missing or invalid Idempotency-Key header")
-        |> halt()
+        |> put_resp_header("idempotency-key", key)
+        |> assign(:idempotency_key, key)
     end
   end
 end
