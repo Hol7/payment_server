@@ -4,7 +4,7 @@
 
 This is a Phoenix (Bandit) application that exposes its public API via **GraphQL (Absinthe)**.
 
-## Architecture (high level)
+## Architecture 
 
 - **`lib/gateway_web/`**
   - **`endpoint.ex`**
