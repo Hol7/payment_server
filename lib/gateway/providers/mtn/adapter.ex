@@ -4,20 +4,26 @@ defmodule Gateway.Providers.MTN.Adapter do
   alias Gateway.Providers.MTN.TokenManager
   alias Gateway.Infra.HttpClient
 
-  @base_url "https://sandbox.momodeveloper.mtn.com"
-
   @impl true
   def provider_type, do: :async
 
   @impl true
   def collect(payment) do
+    config = Application.fetch_env!(:gateway, Gateway.Providers.MTN)
+
+    base_url = config[:base_url] || raise("MTN_BASE_URL is not configured")
+    request_path = config[:collection_request_path] || "/collection/v1_0/requesttopay"
+
+    target_environment =
+      config[:target_environment] || System.get_env("MTN_TARGET_ENV") || "sandbox"
+
     token = TokenManager.get_token()
 
     headers = [
       {"Authorization", "Bearer #{token}"},
       {"Content-Type", "application/json"},
       {"X-Reference-Id", payment.internal_reference},
-      {"X-Target-Environment", "sandbox"},
+      {"X-Target-Environment", target_environment},
       {"Ocp-Apim-Subscription-Key", System.get_env("MTN_SUBSCRIPTION_KEY_COLLECTION")}
     ]
 
@@ -27,11 +33,11 @@ defmodule Gateway.Providers.MTN.Adapter do
       externalId: payment.internal_reference,
       payer: %{
         partyIdType: "MSISDN",
-        partyId: "22900000000"
+        partyId: payment.phone_number
       }
     }
 
-    HttpClient.post("#{@base_url}/collection/v1_0/requesttopay", body, headers)
+    HttpClient.post(base_url <> request_path, body, headers)
   end
 
   @impl true

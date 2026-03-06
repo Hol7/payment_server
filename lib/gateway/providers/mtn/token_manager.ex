@@ -41,7 +41,26 @@ defmodule Gateway.Providers.MTN.TokenManager do
   end
 
   defp fetch_token do
-    # Call MTN token endpoint here
-    {:ok, "mock_token", 3600}
+    config = Application.fetch_env!(:gateway, Gateway.Providers.MTN)
+
+    base_url = config[:base_url] || raise("MTN_BASE_URL is not configured")
+    token_path = config[:collection_token_path] || "/collection/token/"
+    subscription_key = System.fetch_env!("MTN_SUBSCRIPTION_KEY_COLLECTION")
+    api_user = System.fetch_env!("MTN_API_USER")
+    api_key = System.fetch_env!("MTN_API_KEY")
+
+    basic = Base.encode64("#{api_user}:#{api_key}")
+
+    headers = [
+      {"Authorization", "Basic #{basic}"},
+      {"Ocp-Apim-Subscription-Key", subscription_key}
+    ]
+
+    resp = Req.post!(base_url <> token_path, headers: headers)
+
+    token = resp.body["access_token"]
+    expires_in = resp.body["expires_in"]
+
+    {:ok, token, expires_in}
   end
 end

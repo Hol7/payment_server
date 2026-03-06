@@ -1,8 +1,15 @@
 defmodule GatewayWeb.Router do
   use GatewayWeb, :router
 
+  import Phoenix.LiveView.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {GatewayWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
   end
 
   # pipeline :api do
@@ -16,11 +23,13 @@ defmodule GatewayWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug GatewayWeb.Plugs.Idempotency
+    plug GatewayWeb.Plugs.Authenticate
   end
 
   pipeline :graphiql do
     plug :accepts, ["html", "json"]
     plug GatewayWeb.Plugs.Idempotency
+    plug GatewayWeb.Plugs.Authenticate
   end
 
   scope "/" do
@@ -54,7 +63,9 @@ defmodule GatewayWeb.Router do
 
     forward "/graphiql",
             Absinthe.Plug.GraphiQL,
-            schema: GatewayWeb.GraphQL.Schema
+            schema: GatewayWeb.GraphQL.Schema,
+            interface: :simple,
+            default_url: "/api/graphql"
 
     # post "/webhooks/mtn", WebhookController, :mtn
   end
@@ -69,7 +80,7 @@ defmodule GatewayWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through [:fetch_session, :protect_from_forgery]
+      pipe_through :browser
 
       live_dashboard "/dashboard", metrics: GatewayWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview

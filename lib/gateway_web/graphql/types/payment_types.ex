@@ -23,6 +23,7 @@ defmodule GatewayWeb.GraphQL.Types.PaymentTypes do
     field :create_payment, :payment_response do
       arg(:amount, non_null(:integer))
       arg(:currency, non_null(:string))
+      arg(:phone_number, non_null(:string))
 
       resolve(&PaymentResolver.create_payment/3)
     end
