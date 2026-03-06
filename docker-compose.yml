@@ -3,7 +3,7 @@
 services:
 
   postgres:
-    image: postgres:16
+    image: postgres:15
     container_name: gateway_postgres
     restart: always
     environment:

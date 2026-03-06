@@ -5,8 +5,18 @@ defmodule Gateway.Core.Payments.Payment do
   schema "payments" do
     field :amount, :decimal
     field :currency, :string
+
     field :status, Ecto.Enum,
-      values: [:initiated, :processing, :pending, :awaiting_validation, :success, :failed, :cancelled]
+      values: [
+        :initiated,
+        :processing,
+        :pending,
+        :awaiting_validation,
+        :success,
+        :failed,
+        :cancelled
+      ]
+
     field :type, :string
     field :phone_number, :string
 
@@ -38,6 +48,15 @@ defmodule Gateway.Core.Payments.Payment do
       :idempotency_key,
       :metadata
     ])
-    |> validate_required([:merchant_id, :provider_id, :amount, :currency, :type, :status, :internal_reference, :idempotency_key])
+    |> validate_required([
+      :merchant_id,
+      :provider_id,
+      :amount,
+      :currency,
+      :type,
+      :status,
+      :internal_reference,
+      :idempotency_key
+    ])
   end
 end
