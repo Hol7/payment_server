@@ -14,6 +14,9 @@ RUN mix local.rebar --force
 COPY mix.exs mix.lock ./
 RUN mix deps.get
 
+RUN mix ecto.create
+RUN mix ecto.migrate
+
 COPY . .
 
 RUN mix compile

@@ -1,34 +1,21 @@
 defmodule Gateway.Core.Payments do
   import Ecto.Query, warn: false
 
-  alias Gateway.Repo
   alias Gateway.Core.Payments.Orchestrator
   alias Gateway.Core.Payments.Payment
-  alias Gateway.Core.Merchants.Merchant
 
   def create_payment(attrs) when is_map(attrs) do
-    merchant = Repo.one(from m in Merchant, order_by: [asc: m.inserted_at], limit: 1)
-
-    merchant =
-      case merchant do
-        %Merchant{} = merchant ->
-          merchant
-
-        nil ->
-          {:ok, merchant} =
-            %Merchant{}
-            |> Merchant.changeset(%{
-              name: "Default Merchant",
-              api_key: generate_api_key(),
-              status: "active"
-            })
-            |> Repo.insert()
-
-          merchant
-      end
-
+    merchant_id = Map.get(attrs, :merchant_id) || Map.get(attrs, "merchant_id")
     idempotency_key = Map.get(attrs, :idempotency_key) || Map.get(attrs, "idempotency_key")
 
+    if is_nil(merchant_id) do
+      {:error, :missing_merchant}
+    else
+      do_create_payment(attrs, merchant_id, idempotency_key)
+    end
+  end
+
+  defp do_create_payment(attrs, merchant_id, idempotency_key) do
     idempotency_key =
       case idempotency_key do
         key when is_binary(key) and byte_size(key) > 0 -> key
@@ -44,14 +31,9 @@ defmodule Gateway.Core.Payments do
       metadata: Map.get(attrs, :metadata) || Map.get(attrs, "metadata")
     }
 
-    case Orchestrator.create_and_process(payload, merchant.id, idempotency_key) do
+    case Orchestrator.create_and_process(payload, merchant_id, idempotency_key) do
       {:ok, %Payment{} = payment} -> {:ok, payment}
       {:error, reason} -> {:error, reason}
     end
-  end
-
-  defp generate_api_key do
-    :crypto.strong_rand_bytes(24)
-    |> Base.encode16()
   end
 end
